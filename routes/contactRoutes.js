@@ -13,6 +13,7 @@ router.route("/").get(getContacts)
 // router.route("/show-contact").get(getContact);
 router.route("/:id").delete(deleteContact).put(updateContact).get(getContact);
 router.route("/create").post(createContact);
+router.route("/update/:id").put(updateContact);
 
 
 

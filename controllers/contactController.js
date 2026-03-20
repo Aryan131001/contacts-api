@@ -48,11 +48,16 @@ const deleteContact = expressAsyncHandler(async (req, res) => {
     });
 });
 
-const updateContact = (req,res)=>{
-    res.status(200).send(`Updated ${req.params.id}`);
-}
-const getContact = (req,res)=>{
-    res.status(200).send(`Single contact ${req.params.id}`);
-}
+const updateContact = expressAsyncHandler(async(req,res)=>{
+    customId = Number(req.params.id);
+    const updateTo = await contact.findOneAndUpdate({id:customId},req.body,{new: true, runValidators: true});
+    res.status(200).send(updateTo);
+    return getContacts(req,res);
+})
+const getContact = expressAsyncHandler(async(req,res)=>{
+    const customId = Number(req.params.id);
+    const singleContact = await contact.findOne({id:customId});
+    res.status(200).send(singleContact);
+})
 
 module.exports = {getContacts, createContact, deleteContact, updateContact, getContact};
