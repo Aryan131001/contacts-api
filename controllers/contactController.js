@@ -4,28 +4,31 @@ const contact = require("../models/contactModels")
 const expressAsyncHandler = require("express-async-handler");
 
 const getContacts = expressAsyncHandler(async(req,res)=>{
-    console.log("Shivani");
     const contacts = await contact.find();
-    console.log("ji", contacts);
     res.status(200).send(contacts);
 });
 
 const createContact =expressAsyncHandler( async(req, res) => {
     const { name, id, email, address } = req.body;
-    console.log(req.body);
     if(!name || !id || !email){
         res.status(400);
         throw new Error("All fields are not filled");
     }
-    console.log("name, id, email, address", name, id, email, address)
-    const contacts = await contact.create({
-        name,
-        email,
-        id,
-        address,
-    })
-    console.log(">>>>>", contacts)
-    res.status(201).json(contacts);
+    const existingMail = await contact.findOne({email:email});
+    if(existingMail){
+        console.log("Email Found");
+        res.status(400).send("Email Found");
+    }
+    else{
+        console.log("name, id, email, address", name, id, email, address)
+            const contacts = await contact.create({
+            name,
+            email,
+            id,
+            address,
+        })
+        res.status(201).json(contacts);
+    }
 });
 
 const deleteContact = expressAsyncHandler(async (req, res) => {
